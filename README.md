@@ -2,9 +2,25 @@
 
 <img src="assets/icon.png" width="72" alt="智简简历图标" />
 
+由 [智简简历（aijianli.cn）](https://aijianli.cn/?utm_source=github&utm_medium=readme&utm_campaign=resume_plugin) 开发者维护的开源本地简历编辑器，复用官网编辑器的交互与排版能力。官网提供在线简历制作，本项目提供独立的本地桌面插件。
+
+**[下载本地插件](https://github.com/meyhuan/zhijian-resume-plugin/releases/latest)** · **[无需安装，在线制作简历](https://aijianli.cn/import?utm_source=github&utm_medium=readme&utm_campaign=resume_plugin)**
+
 在支持 MCP Apps 的 AI 桌面客户端内直接编辑简历：修改内容、切换模板、调整行距、导出分页 PDF。复用 React／Lexical 编辑器，使用本地 STDIO MCP，不需要部署网站、公网服务器或 ngrok。
 
 **Windows · 豆包便携包内置 Node.js · Apache-2.0**
+
+## 本地插件还是网页版？
+
+| 需求 | 本地开源插件 | [智简简历网页版](https://aijianli.cn) |
+|---|---|---|
+| 使用入口 | 支持本地 MCP Apps 的桌面客户端；豆包 Windows x64 可上传 ZIP | 浏览器访问，无需安装本插件 |
+| 编辑与排版 | 简约、典雅两套模板，内容编辑与行距调整 | 在线编辑与模板选择 |
+| 导出 | 本机 Chrome / Edge 生成分页 PDF | PDF、可编辑 Word 等，按网站账号权益使用 |
+| 保存 | 本机草稿，不提供账号同步 | 网站账号内保存 |
+| 适合谁 | 想在 AI 桌面会话里编辑，或研究、修改源码的用户 | 想直接粘贴 AI 文本排版，或需要 Word 导出的用户 |
+
+两者不会自动同步简历。开源许可证适用于本仓库自有代码，不代表网站服务免费无限使用；网站权益请查看[价格说明](https://aijianli.cn/pricing)。插件不内置云 AI 服务，模型能力与使用限制由宿主提供。它不是豆包或 OpenAI 官方产品。
 
 ## 功能
 
