@@ -23,14 +23,17 @@ const env = { SystemRoot: process.env.SystemRoot!, PATH: join(process.env.System
 const runtime = execFileSync(join(installed, 'runtime/node.exe'), ['--version'], { env, encoding: 'utf8' }).trim();
 assert.equal(runtime, 'v22.23.5');
 const client = new Client({ name: 'doubao-zip-smoke', version: '1' });
-await client.connect(new StdioClientTransport({ command: mcp.command, args: mcp.args, cwd: workspace, env, stderr: 'inherit' }));
 try {
+  console.log('ZIP smoke: connecting bundled runtime');
+  await client.connect(new StdioClientTransport({ command: mcp.command, args: mcp.args, cwd: workspace, env, stderr: 'inherit' }));
+  console.log('ZIP smoke: connected');
   const resources = await client.listResources();
   const html = await client.readResource({ uri: resources.resources[0].uri });
   assert.ok('text' in html.contents[0] && html.contents[0].text.length > 100_000);
   const resume = structuredClone(DEMO_RESUME);
   const block = resume.sections[0].blocks[0];
   if ('contentHtml' in block) block.contentHtml = Array.from({ length: 80 }, (_, i) => `<p>ZIPROW${i + 1}END 本地安装测试，协调团队完成产品设计、需求评审和项目验收。</p>`).join('');
+  console.log('ZIP smoke: creating document');
   const created = await client.callTool({ name: 'create_resume', arguments: { resume } });
   const session = created._meta?.session as EditorSession;
   assert.ok(session?.id);
@@ -38,10 +41,12 @@ try {
   session.document.template = 'elegant';
   const saved = await client.callTool({ name: 'save_resume', arguments: { id: session.id, accessKey: session.accessKey, expectedRevision: 1, documentJson: JSON.stringify(session.document) } });
   assert.ok(!saved.isError, JSON.stringify(saved.content));
+  console.log('ZIP smoke: saved; exporting PDF');
   const result = await client.callTool({ name: 'export_resume_pdf', arguments: { id: session.id, accessKey: session.accessKey, revision: 2 } });
   assert.ok(!result.isError, JSON.stringify(result.content));
   const data = new Uint8Array(Buffer.from((result._meta!.result as { base64: string }).base64, 'base64'));
   await writeFile('artifacts/doubao-zip-smoke.pdf', data);
+  console.log('ZIP smoke: exported; checking PDF');
   const loadingTask = getDocument({ data: data.slice(), useSystemFonts: true });
   const pdf = await loadingTask.promise;
   assert.ok(pdf.numPages > 1);
