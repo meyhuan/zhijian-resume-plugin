@@ -19,7 +19,7 @@ const manifest = JSON.parse(await readFile(join(installed, 'plugin.json'), 'utf8
 assert.equal(manifest.version, pkg.version);
 const mcp = JSON.parse(await readFile(join(installed, 'mcp.json'), 'utf8')).mcpServers['zhijian-resume-desktop'];
 // Only Windows system commands remain in PATH. No global Node or npm is available.
-const env = { ...process.env as Record<string, string>, SystemRoot: process.env.SystemRoot!, PATH: join(process.env.SystemRoot!, 'System32/WindowsPowerShell/v1.0'), LOCALAPPDATA: localAppData, USERPROFILE: process.env.USERPROFILE!, TEMP: process.env.TEMP!, RESUME_DATA_DIR: join(workspace, 'drafts') };
+const env = { ...process.env as Record<string, string>, ZJ_LAUNCH_DEBUG: '1', SystemRoot: process.env.SystemRoot!, PATH: join(process.env.SystemRoot!, 'System32/WindowsPowerShell/v1.0'), LOCALAPPDATA: localAppData, USERPROFILE: process.env.USERPROFILE!, TEMP: process.env.TEMP!, RESUME_DATA_DIR: join(workspace, 'drafts') };
 const runtime = execFileSync(join(installed, 'runtime/node.exe'), ['--version'], { env, encoding: 'utf8' }).trim();
 assert.equal(runtime, 'v22.23.5');
 const client = new Client({ name: 'doubao-zip-smoke', version: '1' });
