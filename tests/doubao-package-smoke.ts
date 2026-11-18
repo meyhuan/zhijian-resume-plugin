@@ -30,9 +30,9 @@ try {
 } finally { await directClient.close(); }
 // Emulate a UTF-8 Windows host: .NET Framework's default stdin writer would
 // inject a BOM before JSON unless the packaged relay resets its encoding.
-assert.equal(mcp.args.at(-2), '-EncodedCommand');
+assert.equal(mcp.args.at(-2), '-Command');
 const utf8Args = [...mcp.args];
-utf8Args[utf8Args.length - 1] = Buffer.from('[Console]::InputEncoding = [System.Text.Encoding]::UTF8;\n' + Buffer.from(utf8Args.at(-1), 'base64').toString('utf16le'), 'utf16le').toString('base64');
+utf8Args[utf8Args.length - 1] = '[Console]::InputEncoding = [System.Text.Encoding]::UTF8;\n' + utf8Args.at(-1);
 const utf8Client = new Client({ name: 'doubao-utf8-host-probe', version: '1' });
 try {
   console.log('ZIP smoke: checking UTF-8 host regression');
