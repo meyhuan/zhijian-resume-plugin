@@ -1,0 +1,15 @@
+node_modules/
+dist/
+artifacts/
+.env
+.env.*
+!.env.example
+*.zresume
+*.log
+release/
+*.tsbuildinfo
+# One-time local migration helpers, excluded from the standalone source and package.
+extract.cjs
+scripts/prepare.cjs
+scripts/update-ui.cjs
+scripts/update-tests.cjs

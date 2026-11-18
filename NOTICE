@@ -1,0 +1,15 @@
+Zhijian Resume Desktop Plugin
+Copyright 2026 Zhijian Resume contributors
+
+This project includes editor components extracted from the project owner's
+resume-builder-nextjs application and adapted for local MCP Apps hosts.
+Project-owned source is licensed under Apache-2.0.
+
+Third-party components retain their own licenses and copyright notices.
+See THIRD_PARTY_NOTICES.md for the dependency inventory and license texts.
+DOCX Editor was an architectural reference; its commercial editor is not
+distributed with this project. This project is not an official OpenAI or
+Doubao product.
+
+The icon assets originate from the same project-owned application and are
+covered by Apache-2.0. The license does not grant rights to project trademarks.

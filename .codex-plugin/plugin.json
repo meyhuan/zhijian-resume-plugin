@@ -1,0 +1,35 @@
+{
+  "name": "zhijian-resume",
+  "version": "0.4.0",
+  "description": "智简简历：在 AI 对话中编辑简历、切换模板、调整行距并导出分页 PDF，本地运行。",
+  "mcpServers": "./.mcp.json",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "智简简历",
+    "shortDescription": "编辑简历、切换模板、调整行距，导出分页 PDF",
+    "developerName": "智简简历",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "请用智简简历创建一份虚构的中文求职简历，并打开内嵌编辑器，让我修改内容、切换模板、调整行间距并导出分页 PDF。"
+    ],
+    "brandColor": "#7c3aed",
+    "composerIcon": "./assets/icon.png",
+    "logo": "./assets/icon.png",
+    "logoDark": "./assets/icon.png",
+    "websiteURL": "https://github.com/meyhuan/zhijian-resume-plugin",
+    "supportURL": "https://github.com/meyhuan/zhijian-resume-plugin/issues",
+    "privacyPolicyURL": "https://github.com/meyhuan/zhijian-resume-plugin/blob/main/docs/privacy.md"
+  },
+  "homepage": "https://github.com/meyhuan/zhijian-resume-plugin",
+  "repository": "https://github.com/meyhuan/zhijian-resume-plugin",
+  "license": "Apache-2.0",
+  "author": {
+    "name": "智简简历",
+    "url": "https://github.com/meyhuan/zhijian-resume-plugin"
+  }
+}

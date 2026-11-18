@@ -1,0 +1,158 @@
+@import "tailwindcss";
+
+/* Reveal controls without translating the reading surface or changing its height. */
+@keyframes assistant-reveal { from { opacity: 0; } to { opacity: 1; } }
+.assistant-reveal { animation: assistant-reveal 160ms ease-out; }
+@media (prefers-reduced-motion: reduce) {
+  .assistant-reveal { animation: none; }
+}
+
+@theme {
+  /* AI/Cyberpunk Theme (Electric Violet + Fuchsia) */
+  --color-background: #ffffff;
+  --color-foreground: #0f172a;            /* slate-900 */
+  --color-card: #ffffff;
+  --color-card-foreground: #0f172a;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #0f172a;
+  --color-primary: #7c3aed;               /* violet-600 */
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #d946ef;             /* fuchsia-500 */
+  --color-secondary-foreground: #ffffff;
+  --color-muted: #f5f3ff;                 /* violet-50 */
+  --color-muted-foreground: #6b7280;      /* gray-500 */
+  --color-accent: #8b5cf6;                /* violet-500 */
+  --color-accent-foreground: #ffffff;
+  --color-destructive: #ef4444;           /* red-500 */
+  --color-destructive-foreground: #ffffff;
+  --color-border: #e5e7eb;                /* gray-200 */
+  --color-input: #e5e7eb;                 /* gray-200 */
+  --color-ring: #7c3aed;                  /* violet-600 */
+  --radius: 0.75rem;                      /* rounded-xl for modern feel */
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.2; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(1.1); }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 8s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float 6s ease-in-out infinite;
+  animation-delay: 3s;
+}
+
+.animate-float-slow {
+  animation: float 8s ease-in-out infinite;
+}
+
+@keyframes bounce-subtle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.animate-bounce-subtle {
+  animation: bounce-subtle 3s ease-in-out infinite;
+}
+
+.ai-chat-markdown p {
+  margin-bottom: 0.5rem;
+}
+.ai-chat-markdown p:last-child {
+  margin-bottom: 0;
+}
+.ai-chat-markdown strong {
+  font-weight: 600;
+  color: #0f172a;
+}
+.ai-chat-markdown ul,
+.ai-chat-markdown ol {
+  margin: 0 0 0.5rem 1.1rem;
+}
+.ai-chat-markdown ul {
+  list-style: disc;
+}
+.ai-chat-markdown ol {
+  list-style: decimal;
+}
+.ai-chat-markdown li {
+  margin-bottom: 0.2rem;
+}
+.ai-chat-markdown li:last-child {
+  margin-bottom: 0;
+}
+.ai-chat-markdown code {
+  border-radius: 0.25rem;
+  background: #f5f3ff;
+  padding: 0.1rem 0.3rem;
+  font-size: 0.75rem;
+  color: #6d28d9;
+}
+.ai-chat-markdown pre {
+  margin-bottom: 0.5rem;
+  overflow-x: auto;
+  border-radius: 0.5rem;
+  background: #0f172a;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.75rem;
+  color: #e2e8f0;
+}
+.ai-chat-markdown pre code {
+  background: transparent;
+  padding: 0;
+  color: inherit;
+}
+
+/* Ensure runtime variables are defined for browsers */
+:root {
+  --color-background: #ffffff;
+  --color-foreground: #0f172a;
+  --color-card: #ffffff;
+  --color-card-foreground: #0f172a;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #0f172a;
+  --color-primary: #7c3aed;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #d946ef;
+  --color-secondary-foreground: #ffffff;
+  --color-muted: #f5f3ff;
+  --color-muted-foreground: #6b7280;
+  --color-accent: #8b5cf6;
+  --color-accent-foreground: #ffffff;
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #ffffff;
+  --color-border: #e5e7eb;
+  --color-input: #e5e7eb;
+  --color-ring: #7c3aed;
+  --radius: 0.75rem;
+}

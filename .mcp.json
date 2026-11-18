@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "zhijian-resume": {
+      "command": "node",
+      "args": ["./dist/cli.cjs"],
+      "cwd": ".",
+      "env_vars": ["PATH", "LOCALAPPDATA", "USERPROFILE", "CHROME_PATH"]
+    }
+  }
+}

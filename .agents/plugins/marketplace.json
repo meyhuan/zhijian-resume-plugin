@@ -1,0 +1,5 @@
+{
+  "name": "zhijian-local",
+  "interface": { "displayName": "智简简历" },
+  "plugins": [{ "name": "zhijian-resume", "source": { "source": "local", "path": "." }, "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" }, "category": "Productivity" }]
+}

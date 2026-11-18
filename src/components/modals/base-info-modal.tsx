@@ -1,0 +1,336 @@
+import { useState } from 'react';
+import type { ReactElement } from 'react';
+import type { BaseInfo } from '@/entities/user/base-info';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { AutocompleteInput } from '@/components/ui/autocomplete-input';
+import { CITY_OPTIONS } from '@/data/dictionaries/cities';
+import { POSITION_SUGGESTIONS, POLITICAL_STATUS_SUGGESTIONS } from '@/data/dictionaries/editor-suggestions';
+import { Input } from '@/components/ui/input';
+import { EmailInput } from '@/components/ui/email-input';
+import { ChineseMonthInput } from '@/components/ui/chinese-month-input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { ChevronDown, Plus, Trash2 } from 'lucide-react';
+import { splitTemplateExclusiveBaseInfoFields } from '@/lib/template-exclusive-fields';
+import { AvatarSizeControl } from '@/components/avatar/avatar-size-control';
+import { normalizeAvatarSize } from '@/entities/user/avatar-size';
+
+interface CustomField {
+  label: string;
+  value: string;
+}
+
+/**
+ * Modal for editing base info fields.
+ */
+export interface BaseInfoModalProps {
+  readonly baseInfo: BaseInfo | null;
+  readonly name: string;
+  readonly onClose: () => void;
+  readonly onSave: (baseInfo: BaseInfo, name: string) => void;
+  readonly avatarMaxScale?: number;
+}
+
+export default function BaseInfoModal(props: BaseInfoModalProps): ReactElement {
+  const initialCustomFields = (props.baseInfo?.customFields as CustomField[] | undefined)?.map(f => ({ ...f })) ?? [];
+  const {
+    ordinaryFields: initialOrdinaryCustomFields,
+    exclusiveFields: templateExclusiveCustomFields,
+  } = splitTemplateExclusiveBaseInfoFields(initialCustomFields);
+  const [name, setName] = useState(props.name);
+  const [title, setTitle] = useState(props.baseInfo?.title ?? '');
+  const [phone, setPhone] = useState(props.baseInfo?.phone ?? '');
+  const [email, setEmail] = useState(props.baseInfo?.email ?? '');
+  const [gender, setGender] = useState(props.baseInfo?.gender ?? '');
+  const [age, setAge] = useState(props.baseInfo?.age?.toString() ?? '');
+  const [avatarUrl] = useState(props.baseInfo?.avatarUrl ?? '');
+  const [showAvatar, setShowAvatar] = useState(props.baseInfo?.showAvatar !== false);
+  const [avatarSize, setAvatarSize] = useState(normalizeAvatarSize(props.baseInfo?.avatarSize));
+  const [nation, setNation] = useState(props.baseInfo?.nation ?? '');
+  const [household, setHousehold] = useState(props.baseInfo?.household ?? '');
+  const [currentLocation, setCurrentLocation] = useState(props.baseInfo?.currentLocation ?? '');
+  const [workStartTime, setWorkStartTime] = useState(props.baseInfo?.workStartTime ?? '');
+  const [politicalStatus, setPoliticalStatus] = useState(props.baseInfo?.politicalStatus ?? '');
+  const [height, setHeight] = useState(props.baseInfo?.height ?? '');
+  const [weight, setWeight] = useState(props.baseInfo?.weight ?? '');
+  const [showMoreFields, setShowMoreFields] = useState(false);
+  const [customFields, setCustomFields] = useState<CustomField[]>(initialOrdinaryCustomFields);
+  const moreInfoCount = [nation, household, currentLocation, workStartTime, politicalStatus, height, weight].filter(value => value.trim()).length
+    + customFields.filter(field => field.label.trim() && field.value.trim()).length;
+  const moreInfoSummary = [`已填写 ${moreInfoCount} 项`, currentLocation.trim() && `现居${currentLocation.trim()}`, household.trim() && `户籍${household.trim()}`].filter(Boolean).join(' · ');
+
+  function addCustomField(): void {
+    setCustomFields([...customFields, { label: '', value: '' }]);
+  }
+
+  function removeCustomField(index: number): void {
+    setCustomFields(customFields.filter((_, i) => i !== index));
+  }
+
+  function updateCustomField(index: number, key: 'label' | 'value', val: string): void {
+    const updated = [...customFields];
+    updated[index] = { ...updated[index], [key]: val };
+    setCustomFields(updated);
+  }
+
+  function handleSave(): void {
+    const validCustomFields = customFields.filter(f => f.label && f.value);
+    const { ordinaryFields: validOrdinaryCustomFields } = splitTemplateExclusiveBaseInfoFields(validCustomFields);
+    const validTemplateExclusiveCustomFields = templateExclusiveCustomFields.filter(f => f.label && f.value);
+    const nextCustomFields = [...validOrdinaryCustomFields, ...validTemplateExclusiveCustomFields];
+    const updatedBaseInfo: BaseInfo = {
+      ...props.baseInfo,
+      title,
+      phone: phone || undefined,
+      email: email || undefined,
+      gender: gender || undefined,
+      age: age ? Number(age) : undefined,
+      avatarUrl: showAvatar ? (avatarUrl || undefined) : undefined,
+      showAvatar,
+      avatarSize,
+      nation: nation || undefined,
+      household: household || undefined,
+      currentLocation: currentLocation || undefined,
+      workStartTime: workStartTime || undefined,
+      politicalStatus: politicalStatus || undefined,
+      height: height || undefined,
+      weight: weight || undefined,
+      customFields: nextCustomFields.length > 0 ? nextCustomFields : undefined,
+    };
+    props.onSave(updatedBaseInfo, name);
+    props.onClose();
+  }
+
+  return (
+    <Dialog open={true} onOpenChange={(open) => !open && props.onClose()}>
+      <DialogContent aria-describedby={undefined} className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>基本信息</DialogTitle>
+        </DialogHeader>
+
+        <div className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="name">姓名</Label>
+              <Input
+                id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="title">意向岗位</Label>
+              <AutocompleteInput
+                id="title"
+                value={title}
+                onValueChange={setTitle}
+                options={POSITION_SUGGESTIONS}
+                listLabel="岗位建议"
+                placeholder="输入岗位关键词，也可自定义"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="gender">性别</Label>
+              <Select value={gender} onValueChange={setGender}>
+                <SelectTrigger id="gender">
+                  <SelectValue placeholder="请选择" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="男">男</SelectItem>
+                  <SelectItem value="女">女</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="avatar">头像</Label>
+              <Select
+                value={showAvatar ? 'show' : 'hide'}
+                onValueChange={(val) => setShowAvatar(val === 'show')}
+              >
+                <SelectTrigger id="avatar">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="show">显示</SelectItem>
+                  <SelectItem value="hide">隐藏</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {showAvatar && avatarUrl && <AvatarSizeControl value={avatarSize} onChange={setAvatarSize} maxScale={props.avatarMaxScale} />}
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="email">邮箱</Label>
+              <EmailInput
+                id="email"
+                value={email}
+                onValueChange={setEmail}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="phone">电话</Label>
+              <Input
+                id="phone"
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="age">年龄</Label>
+              <Input
+                id="age"
+                type="number"
+                value={age}
+                onChange={(e) => setAge(e.target.value)}
+                placeholder="33"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-1">
+            <Button
+              type="button"
+              variant="ghost"
+              aria-expanded={showMoreFields}
+              aria-controls="base-more-fields"
+              aria-describedby={!showMoreFields && moreInfoCount ? 'base-more-summary' : undefined}
+              onClick={() => setShowMoreFields(!showMoreFields)}
+              className="min-h-11 w-fit justify-start gap-2 px-2 -ml-2 font-normal text-muted-foreground hover:bg-transparent hover:text-primary active:bg-transparent active:text-primary focus-visible:ring-2 focus-visible:ring-offset-2"
+            >
+              <span>更多信息（选填）</span>
+              <ChevronDown
+                aria-hidden="true"
+                className={`h-4 w-4 transition-transform motion-reduce:transition-none ${showMoreFields ? 'rotate-180' : ''}`}
+              />
+            </Button>
+            {!showMoreFields && moreInfoCount > 0 && <p id="base-more-summary" className="text-xs leading-relaxed text-muted-foreground break-words">{moreInfoSummary}</p>}
+          </div>
+
+          {showMoreFields && (
+            <div id="base-more-fields" className="space-y-4 pt-2 border-t">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="nation">民族</Label>
+                  <Input
+                    id="nation"
+                    value={nation}
+                    onChange={(e) => setNation(e.target.value)}
+                    placeholder="请输入"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="household">户籍</Label>
+                  <AutocompleteInput id="household" listLabel="户籍城市建议" value={household} options={CITY_OPTIONS}
+                    onValueChange={setHousehold} placeholder="输入户籍地、拼音或首字母" className="h-11" />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="currentLocation">现所在地</Label>
+                  <AutocompleteInput id="currentLocation" listLabel="现所在地建议" value={currentLocation} options={CITY_OPTIONS}
+                    onValueChange={setCurrentLocation} placeholder="输入城市、拼音或首字母" className="h-11" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="workStartTime">开始工作时间</Label>
+                  <ChineseMonthInput
+                    id="workStartTime"
+                    value={workStartTime}
+                    onValueChange={setWorkStartTime}
+                    valueFormat="resume"
+                    ariaLabel="开始工作时间"
+                    placeholder="请选择年月"
+                    className="h-11 w-full rounded-md border border-input bg-transparent px-3 text-sm shadow-sm transition-colors hover:border-slate-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="politicalStatus">政治面貌</Label>
+                  <AutocompleteInput
+                    id="politicalStatus"
+                    value={politicalStatus}
+                    onValueChange={setPoliticalStatus}
+                    options={POLITICAL_STATUS_SUGGESTIONS}
+                    listLabel="政治面貌建议"
+                    placeholder="选择或输入政治面貌"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="height">身高</Label>
+                  <Input
+                    id="height"
+                    value={height}
+                    onChange={(e) => setHeight(e.target.value)}
+                    placeholder="身高(cm)"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="weight">体重</Label>
+                  <Input
+                    id="weight"
+                    value={weight}
+                    onChange={(e) => setWeight(e.target.value)}
+                    placeholder="体重(kg)"
+                  />
+                </div>
+              </div>
+
+              {/* Custom fields */}
+              <div className="space-y-3 pt-2 border-t">
+                <div className="flex items-center justify-between">
+                  <Label>自定义字段</Label>
+                  <Button type="button" variant="ghost" size="sm" onClick={addCustomField} className="h-7 text-xs gap-1">
+                    <Plus className="h-3 w-3" />
+                    <span>添加字段</span>
+                  </Button>
+                </div>
+                {customFields.map((field, index) => (
+                  <div key={index} className="flex items-center gap-2">
+                    <Input
+                      value={field.label}
+                      onChange={(e) => updateCustomField(index, 'label', e.target.value)}
+                      placeholder="字段名"
+                      className="w-28 shrink-0"
+                    />
+                    <Input
+                      value={field.value}
+                      onChange={(e) => updateCustomField(index, 'value', e.target.value)}
+                      placeholder="字段值"
+                    />
+                    <Button type="button" variant="ghost" size="sm" onClick={() => removeCustomField(index)} className="h-8 w-8 p-0 shrink-0 text-red-500 hover:text-red-700 hover:bg-red-50">
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        <DialogFooter>
+          <Button variant="outline" onClick={props.onClose}>
+            取消
+          </Button>
+          <Button onClick={handleSave}>
+            确定
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
