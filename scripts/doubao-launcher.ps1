@@ -38,9 +38,19 @@ if ($env:ZJ_LAUNCH_DEBUG -eq '1') { [Console]::Error.WriteLine('Zhijian bootstra
 Add-Type -TypeDefinition @'
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Threading.Tasks;
 public static class ZhijianStdio {
     static void Trace(string message) { if (Environment.GetEnvironmentVariable("ZJ_LAUNCH_DEBUG") == "1") Console.Error.WriteLine("Zhijian relay: " + message); }
+    static void Pump(Stream source, Stream target, string name) {
+        var buffer = new byte[8192];
+        int count;
+        while ((count = source.Read(buffer, 0, buffer.Length)) > 0) {
+            Trace(name + " bytes: " + count);
+            target.Write(buffer, 0, count);
+            target.Flush();
+        }
+    }
     public static int Run(string runtime, string server) {
         var info = new ProcessStartInfo(runtime, "\"" + server + "\"");
         info.UseShellExecute = false;
@@ -66,8 +76,8 @@ public static class ZhijianStdio {
                 }
                 finally { child.StandardInput.Close(); }
             });
-            var output = Task.Run(() => { Trace("output pump started"); child.StandardOutput.BaseStream.CopyTo(Console.OpenStandardOutput()); });
-            var error = Task.Run(() => child.StandardError.BaseStream.CopyTo(Console.OpenStandardError()));
+            var output = Task.Run(() => { Trace("output pump started"); Pump(child.StandardOutput.BaseStream, Console.OpenStandardOutput(), "output"); });
+            var error = Task.Run(() => Pump(child.StandardError.BaseStream, Console.OpenStandardError(), "error"));
             try {
                 child.WaitForExit();
                 Task.WaitAll(output, error);

@@ -22,6 +22,12 @@ const mcp = JSON.parse(await readFile(join(installed, 'mcp.json'), 'utf8')).mcpS
 const env = { ...process.env as Record<string, string>, ZJ_LAUNCH_DEBUG: '1', SystemRoot: process.env.SystemRoot!, PATH: join(process.env.SystemRoot!, 'System32/WindowsPowerShell/v1.0'), LOCALAPPDATA: localAppData, USERPROFILE: process.env.USERPROFILE!, TEMP: process.env.TEMP!, RESUME_DATA_DIR: join(workspace, 'drafts') };
 const runtime = execFileSync(join(installed, 'runtime/node.exe'), ['--version'], { env, encoding: 'utf8' }).trim();
 assert.equal(runtime, 'v22.23.5');
+const directClient = new Client({ name: 'doubao-direct-runtime-probe', version: '1' });
+try {
+  console.log('ZIP smoke: checking bundled Node directly');
+  await directClient.connect(new StdioClientTransport({ command: join(installed, 'runtime/node.exe'), args: [join(installed, 'dist/cli.cjs')], cwd: workspace, env, stderr: 'inherit' }));
+  console.log('ZIP smoke: direct runtime connected');
+} finally { await directClient.close(); }
 const client = new Client({ name: 'doubao-zip-smoke', version: '1' });
 try {
   console.log('ZIP smoke: connecting bundled runtime');
