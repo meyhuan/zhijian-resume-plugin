@@ -39,6 +39,7 @@ Add-Type -TypeDefinition @'
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 public static class ZhijianStdio {
     static void Trace(string message) { if (Environment.GetEnvironmentVariable("ZJ_LAUNCH_DEBUG") == "1") Console.Error.WriteLine("Zhijian relay: " + message); }
@@ -58,6 +59,11 @@ public static class ZhijianStdio {
         info.RedirectStandardInput = true;
         info.RedirectStandardOutput = true;
         info.RedirectStandardError = true;
+        // Windows PowerShell/.NET Framework derives the child's stdin writer
+        // from Console.InputEncoding. UTF-8 with a BOM injects EF BB BF before
+        // the first JSON-RPC message when Process enables AutoFlush.
+        // Set this process-local encoding before constructing that writer.
+        Console.InputEncoding = new UTF8Encoding(false);
         Trace("starting Node");
         using (var child = Process.Start(info)) {
             Trace("Node started");

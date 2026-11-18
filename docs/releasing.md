@@ -43,3 +43,5 @@ Windows 维护者运行 `npm run release:doubao`，再运行 `npm run test:douba
 下载并解压最终 ZIP，运行安装器选择 Local；确认生成的路径在目标机器有效。在支持的宿主内用虚构简历完成修改、保存、模板、行距、多页预览、实际下载检查。ChatGPT 和豆包分开验证，不能以一个宿主成功替代另一个。
 
 安装更新保留旧版本目录和草稿，防止运行中的编辑器失效。旧版本清理由用户在关闭宿主后通过资源管理器进行；发布脚本不删除用户数据。
+
+启动脚本以 PowerShell `-EncodedCommand` 传入，源码仍保留在 scripts/doubao-launcher.ps1。转发器为子进程 stdin 显式设置无 BOM 的 UTF-8，避免 Windows UTF-8 区域设置下 .NET Framework 自动写入 BOM 导致 JSON 握手超时；输入输出逐段刷新。便携包测试同时检查原始清单命令与模拟 UTF-8 宿主。
