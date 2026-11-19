@@ -1,3 +1,4 @@
 # Preserve upstream license formatting in the generated notices and supplements.
 THIRD_PARTY_NOTICES.md -whitespace
 third-party/* -whitespace
+scripts/*.sh text eol=lf

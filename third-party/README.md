@@ -9,4 +9,4 @@ Retrieved 2026-11-18:
 - degenerator-LICENSE: https://github.com/TooTallNate/proxy-agents/blob/main/packages/degenerator/LICENSE (upstream snapshot; npm 5.0.1 has no gitHead).
 - react-remove-scroll-bar-LICENSE: https://github.com/theKashey/react-remove-scroll-bar/blob/master/LICENSE (upstream snapshot; the published 2.3.8 gitHead does not contain this file).
 
-The Windows canvas binary package uses the license from its same-version installed @napi-rs/canvas parent package. Regenerate THIRD_PARTY_NOTICES.md after dependency changes and review upstream supplements when upgrading these packages.
+The Windows x64 and macOS canvas binary packages use the license from the installed @napi-rs/canvas parent package of the same version. Regenerate THIRD_PARTY_NOTICES.md after dependency changes and review upstream supplements when upgrading these packages.

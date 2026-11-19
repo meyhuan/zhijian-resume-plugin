@@ -6,6 +6,8 @@
 
 ## 安装
 
+macOS 请按 [macOS 接入说明](macos.md) 构建或解压安装包，并注册本地插件。以下步骤适用于 Windows。
+
 1. 完成 [Windows 依赖准备](windows.md)。确保 `codex plugin --help` 可用；若不识别，先按你所用桌面环境的官方说明安装或更新 Codex CLI。
 2. 双击 `install.cmd`，选择 `2` 或 `3`。也可执行 `powershell.exe -NoProfile -File scripts/install.ps1 -Target ChatGPT`。
 3. 脚本调用 `codex plugin marketplace add <本机安装目录>` 与 `codex plugin add zhijian-resume@zhijian-local`。它使用当前用户现有 CLI 环境，不修改其它插件。

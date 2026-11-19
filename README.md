@@ -8,7 +8,7 @@
 
 在支持 MCP Apps 的 AI 桌面客户端内直接编辑简历：修改内容、切换模板、调整行距、导出分页 PDF。复用 React／Lexical 编辑器，使用本地 STDIO MCP，不需要部署网站、公网服务器或 ngrok。
 
-**Windows · 豆包便携包内置 Node.js · Apache-2.0**
+**Windows 已验收 · macOS 适配待桌面端验收 · Apache-2.0**
 
 ## 本地插件还是网页版？
 
@@ -35,7 +35,9 @@
 
 下载后可在 PowerShell 中运行 `Get-FileHash .\zhijian-resume-0.4.0-doubao-win-x64.zip -Algorithm SHA256`，与 Release 附带的 `.sha256` 文件比对。
 
-**ChatGPT 或手动连接器安装：**
+**macOS（ChatGPT／Codex）：**参见 [macOS 接入说明](docs/macos.md)。发布安装包前，可从源码构建并注册本地插件。
+
+**Windows（ChatGPT 或手动连接器）：**
 
 1. 安装 [Node.js 22.13+](https://nodejs.org/)，确保本机有 Chrome 或 Edge。
 2. 从 [Releases](https://github.com/meyhuan/zhijian-resume-plugin/releases) 下载 Windows ZIP，完整解压；也可下载源码并安装。
@@ -67,6 +69,8 @@
 |---|---|---|---|
 | 支持本地插件的 ChatGPT／Codex 桌面环境 | STDIO MCP | MCP Apps | 已完成本机实际编辑与 3 页 PDF 下载验收 |
 | 豆包 Windows 电脑版“本地电脑”任务 | ZIP 上传，内置 Node + STDIO | MCP Apps | 已实际安装，完成编辑、模板、行距、保存及 5 页 PDF 下载验收 |
+| macOS ChatGPT／Codex | 本地插件市场 + STDIO | 需要 MCP Apps | 已添加安装包及自动化验证流程，桌面宿主待验收 |
+| 豆包 macOS | 可尝试手动 STDIO | 需要 MCP Apps | 待验证 |
 | 普通 chatgpt.com 网页远程连接器 | 本方案不适用 | — | 不提供公网服务 |
 | 其它 MCP 客户端 | 取决于客户端 | 还需支持 MCP Apps 与文件下载 | 未验证 |
 
@@ -74,7 +78,7 @@
 
 ## 本地运行与隐私
 
-插件不监听 HTTP 端口。宿主启动 Node 子进程，通过 stdin/stdout 调用工具并加载单文件 HTML。草稿默认保存在 `%LOCALAPPDATA%\ZhijianResume\drafts`；PDF 渲染阶段阻断网络请求。
+插件不监听 HTTP 端口。宿主启动 Node 子进程，通过 stdin/stdout 调用工具并加载单文件 HTML。草稿保存在当前用户目录，具体路径见 [数据与权限](docs/privacy.md)。PDF 渲染阶段阻断网络请求。
 
 模型对话、宿主沙箱与首次依赖安装仍可能联网，**不代表整个 AI 客户端完全离线**。草稿明文保存，.zresume 含访问凭据；不要公开分享。详见 [数据与权限](docs/privacy.md)。
 
@@ -90,14 +94,14 @@ npm run smoke
 npm run test:install
 ```
 
-`npm run release:doubao` 构建豆包上传 ZIP 和 SHA256，`npm run test:doubao-package` 验证无系统 Node 的运行链路；`npm run release:windows` 构建备用安装器 ZIP。维护者流程见 [发布说明](docs/releasing.md)。项目保持 `private: true` 防止误发 npm；不影响源代码的开源授权。
+`npm run release:doubao` 构建豆包上传 ZIP 和 SHA256，`npm run test:doubao-package` 验证无系统 Node 的运行链路。`npm run release:windows` 构建 Windows 备用安装器，`npm run release:macos` 构建 macOS 插件包。维护者流程见 [发布说明](docs/releasing.md)。项目保持 `private: true` 防止误发 npm；不影响源代码的开源授权。
 
 | 目录 | 用途 |
 |---|---|
 | `server/` | STDIO MCP、草稿存储、鉴权、PDF 渲染 |
 | `web/` | MCP Apps 桥接、编辑器外壳、PDF 预览 |
 | `src/` | 从原项目抽取的编辑器与两套模板依赖 |
-| `scripts/` | 构建、Windows 安装、许可证和发布打包 |
+| `scripts/` | 构建、桌面安装、许可证和发布打包 |
 | `tests/` | 协议、存储、UI、PDF 和安装测试 |
 | `docs/` | 接入、隐私、排错、发布文档 |
 

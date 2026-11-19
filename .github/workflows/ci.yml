@@ -1,4 +1,4 @@
-name: Windows validation
+name: Desktop validation
 on: [push, pull_request]
 permissions:
   contents: read
@@ -27,3 +27,29 @@ jobs:
           path: |
             release/*.zip
             release/*.sha256
+  macos:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [macos-15, macos-15-intel]
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run test:ui
+      - run: node scripts/package.mjs macos
+      - run: npm run smoke -- --macos-package
+      - uses: actions/upload-artifact@v4
+        if: github.ref == 'refs/heads/main'
+        with:
+          name: macos-package-${{ runner.arch }}
+          path: |
+            release/*-macos.zip
+            release/*-macos.zip.sha256

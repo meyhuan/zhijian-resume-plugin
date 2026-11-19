@@ -7,7 +7,7 @@ Use the zhijian-resume create_resume tool to show the interactive resume editor 
 
 Only use experiences supplied by the user. For a requested demonstration, label the data fictional. Supply resume.name, resume.baseInfo and resume.sections; each section has a title and typed blocks (text, experience, education, project, campus or list). Text blocks use html; experience blocks use company, position, startDate, endDate and contentHtml. Supported templates are simple and elegant.
 
-The editor autosaves on this computer. The user can edit text, switch template, change line height, and click 导出分页 PDF, then 下载 PDF. PDF rendering requires Chrome or Edge on Windows. No website account or public endpoint is involved. Do not claim a PDF was exported without a successful tool or UI result.
+The editor autosaves on this computer. The user can edit text, switch template, change line height, and click 导出分页 PDF, then 下载 PDF. PDF rendering requires Chrome or Edge. No website account or public endpoint is involved. Do not claim a PDF was exported without a successful tool or UI result.
 
 ## 首次使用
 

@@ -11,6 +11,7 @@
     "test:ui": "tsx tests/ui-smoke.ts",
     "package": "node scripts/package.mjs",
     "release:windows": "powershell.exe -NoProfile -File scripts/release.ps1",
+    "release:macos": "npm run build && node scripts/package.mjs macos",
     "test:install": "tsx tests/install-smoke.ts",
     "notices": "node scripts/notices.mjs",
     "package:doubao": "node scripts/package-doubao.mjs",

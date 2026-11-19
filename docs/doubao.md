@@ -2,6 +2,8 @@
 
 已在 Windows 豆包电脑版的“本地电脑”任务中实际验证 STDIO 和 MCP Apps；不同客户端版本的菜单可能不同。
 
+macOS 如有自定义 STDIO 连接器和本机任务入口，可尝试按 [macOS 手动接入说明](macos.md#手动-stdio-接入) 配置。macOS 客户端接入待验证，本文的上传包适用于 Windows x64。
+
 ## 推荐：直接上传便携 ZIP
 
 1. 下载 `zhijian-resume-<版本>-doubao-win-x64.zip`，**不要解压**。

@@ -1,4 +1,5 @@
 import { readFile } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { homedir } from 'node:os';
 import { createHash } from 'node:crypto';
@@ -12,7 +13,11 @@ import { resumeSchema, documentSchema, templateSchema } from './schema';
 import { renderPdf } from './pdf';
 
 async function main() {
-const directory = process.env.RESUME_DATA_DIR || join(process.env.LOCALAPPDATA || homedir(), 'ZhijianResume', 'drafts');
+const legacyDirectory = join(process.env.LOCALAPPDATA || homedir(), 'ZhijianResume', 'drafts');
+const defaultDirectory = process.platform === 'darwin' && !existsSync(legacyDirectory)
+  ? join(homedir(), 'Library', 'Application Support', 'ZhijianResume', 'drafts')
+  : legacyDirectory;
+const directory = process.env.RESUME_DATA_DIR || defaultDirectory;
 const store = new DraftStore(Date.now, 10 * 365 * 86400000, directory);
 const html = await readFile(join(__dirname, 'index.html'), 'utf8');
 const uri = `ui://zhijian/editor-${createHash('sha256').update(html).digest('hex').slice(0,12)}.html`;

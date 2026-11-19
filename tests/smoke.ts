@@ -1,13 +1,42 @@
 import assert from 'node:assert/strict';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, writeFile } from 'node:fs/promises';
+import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { connectClient } from './client';
-import { resolve } from 'node:path';
+import { basename, join, resolve } from 'node:path';
 
 import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
 import { DEMO_RESUME, type EditorSession } from '../shared';
 
-const client = await connectClient(resolve('artifacts/test-drafts'));
 await mkdir('artifacts', { recursive: true });
+const client = await (process.argv.includes('--macos-package')
+  ? connectMacPackage()
+  : connectClient(resolve('artifacts/test-drafts')));
+
+async function connectMacPackage() {
+  const { version } = JSON.parse(await readFile('package.json', 'utf8'));
+  const packageName = `zhijian-resume-${version}-macos`;
+  const zip = resolve('release', `${packageName}.zip`);
+  const checksum = createHash('sha256').update(await readFile(zip)).digest('hex');
+  assert.equal((await readFile(`${zip}.sha256`, 'utf8')).trim(), `${checksum}  ${basename(zip)}`);
+  const workspace = await mkdtemp(resolve('artifacts', 'macOS 安装-'));
+  execFileSync('tar', ['-xf', zip, '-C', workspace]);
+  const marketplaceRoot = join(workspace, packageName);
+  const marketplace = JSON.parse(await readFile(join(marketplaceRoot, '.agents/plugins/marketplace.json'), 'utf8'));
+  assert.equal(marketplace.name, 'zhijian-local');
+  assert.equal(marketplace.plugins[0].source.path, './plugin');
+  const installed = resolve(marketplaceRoot, marketplace.plugins[0].source.path);
+  const plugin = JSON.parse(await readFile(join(installed, '.codex-plugin/plugin.json'), 'utf8'));
+  assert.equal(marketplace.plugins[0].name, plugin.name);
+  assert.equal(plugin.version, version);
+  const { command, args, cwd } = JSON.parse(await readFile(join(installed, plugin.mcpServers), 'utf8')).mcpServers['zhijian-resume'];
+  return connectClient(join(workspace, 'drafts'), {
+    command: process.env.ZHIJIAN_TEST_POSIX_SHELL ?? command,
+    args,
+    cwd: resolve(installed, cwd),
+  });
+}
+
 try {
   for (const long of [false, true]) {
     const resume = structuredClone(DEMO_RESUME);

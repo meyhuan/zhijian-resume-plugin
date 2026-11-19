@@ -23,6 +23,12 @@ npm run release:windows
 
 ## 上传内容
 
+### macOS 本地插件 ZIP
+
+在 macOS checkout 中运行 `npm ci`、`npm run release:macos`、`npm run smoke -- --macos-package`。包产物为 `release/zhijian-resume-<版本>-macos.zip` 和对应的 `.sha256`。ZIP 包含插件清单和已构建的 MCP 服务，Apple Silicon 和 Intel 使用同一份 ZIP，运行时需要 Node.js 22.13+。macOS CI 分别运行 Apple Silicon 和 Intel 的编辑器及发布包测试。
+
+发布前，在真实 macOS 桌面宿主按 [安装说明](macos.md) 注册解压包，确认创建、编辑、自动保存、模板、行距和 PDF 下载。发布说明中列明通过验证的宿主和系统架构。
+
 ### 豆包直接上传 ZIP
 
 Windows 维护者运行 `npm run release:doubao`，再运行 `npm run test:doubao-package`。

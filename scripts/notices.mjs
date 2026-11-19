@@ -3,6 +3,8 @@ import { join } from 'node:path';
 const lock = JSON.parse(await readFile('package-lock.json', 'utf8'));
 const supplements = {
   '@cfworker/json-schema': 'third-party/cfworker-LICENSE',
+  '@napi-rs/canvas-darwin-arm64': 'node_modules/@napi-rs/canvas/LICENSE',
+  '@napi-rs/canvas-darwin-x64': 'node_modules/@napi-rs/canvas/LICENSE',
   '@napi-rs/canvas-win32-x64-msvc': 'node_modules/@napi-rs/canvas/LICENSE',
   '@puppeteer/browsers': 'third-party/puppeteer-LICENSE',
   'puppeteer-core': 'third-party/puppeteer-LICENSE',

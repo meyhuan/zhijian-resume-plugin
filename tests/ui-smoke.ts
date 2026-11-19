@@ -1,15 +1,14 @@
 // A local MCP host simulator, not evidence of ChatGPT host compatibility.
 import assert from 'node:assert/strict';
 import { readFile, writeFile } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import puppeteer from 'puppeteer-core';
 import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
 import { connectClient } from './client';
+import { findPdfBrowser } from '../server/browser';
 import { DEMO_RESUME, type EditorSession } from '../shared';
 const client = await connectClient(resolve('artifacts/ui-test-drafts'));
-const executablePath = [process.env.CHROME_PATH, 'C:/Program Files/Google/Chrome/Application/chrome.exe', 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe'].find(p => p && existsSync(p));
-const browser = await puppeteer.launch({ headless: true, executablePath });
+const browser = await puppeteer.launch({ headless: true, executablePath: findPdfBrowser() });
 try {
   const initial = await client.callTool({ name: 'create_resume', arguments: { resume: DEMO_RESUME } });
   const session = initial._meta?.session as EditorSession;
