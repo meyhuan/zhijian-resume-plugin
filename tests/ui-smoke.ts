@@ -46,9 +46,7 @@ try {
   await frame.click('h1');
   await frame.waitForSelector('input#name');
   await frame.click('input#name');
-  await page.keyboard.down('Control');
-  await page.keyboard.press('A');
-  await page.keyboard.up('Control');
+  await frame.$eval('input#name', input => input.select());
   await frame.type('input#name','UI Edited Name');
   for (const button of await frame.$$('button')) if ((await button.evaluate(el=>el.textContent?.trim()))==='确定') { await button.click(); break; }
   await frame.select('select[aria-label="模板"]', 'elegant');
