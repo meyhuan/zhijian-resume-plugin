@@ -43,6 +43,21 @@ jobs:
       - run: npm run build
       - run: npm run typecheck
       - run: npm test
+      - name: Use the Chrome build matched to Puppeteer
+        run: |
+          chrome_path="$(node --input-type=module <<'NODE'
+          import { Browser, install } from '@puppeteer/browsers';
+          import { PUPPETEER_REVISIONS } from 'puppeteer-core';
+          const chrome = await install({
+            cacheDir: process.env.RUNNER_TEMP,
+            browser: Browser.CHROME,
+            buildId: PUPPETEER_REVISIONS.chrome,
+          });
+          process.stdout.write(chrome.executablePath);
+          NODE
+          )"
+          "$chrome_path" --version
+          printf 'CHROME_PATH=%s\n' "$chrome_path" >> "$GITHUB_ENV"
       - run: node scripts/package.mjs macos
       - run: npm run smoke -- --macos-package
       - run: npm run test:ui
