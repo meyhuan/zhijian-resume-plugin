@@ -74,7 +74,7 @@ try {
   let exportedText = '';
   for(let i=1;i<=pdf.numPages;i++) exportedText += (await (await pdf.getPage(i)).getTextContent()).items.map(item=>'str' in item ? item.str : '').join('');
   // PDF text extraction may omit or insert spaces between positioned glyph runs.
-  assert.match(exportedText.replace(/\s+/gu, ''), /UIEditedName/u, `Exported PDF text: ${JSON.stringify(exportedText)}`);
+  assert.match(exportedText.replace(/\s+/gu, ''), /UIEditedName/u, `Exported PDF (${pdf.numPages} pages), text: ${JSON.stringify(exportedText)}`);
   await loadingTask.destroy();
   console.log('PASS: iframe handshake, edit name, template change, line height, autosave, PDF preview and download RPC');
 } finally { await browser.close(); await client.close(); }
